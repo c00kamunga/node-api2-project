@@ -100,7 +100,7 @@ router.post('/api/posts/:id/comments', (req, res) => {
     }
 })
 
-//Removed a post with the specified ID and returns the deleted post
+//Removes a post with the specified ID and returns the deleted post
 router.delete('/api/postst/:id', (req, res) => {
     db.remove(req.params.id)
     .then(removedPost => {
@@ -120,3 +120,33 @@ router.delete('/api/postst/:id', (req, res) => {
         .json({ error: "The post could not be removed" })
     })
 })
+
+// updates post with the specified ID using data from the request body
+router.put('/posts/:id', (req, res) => {
+    if (!req.body.title && !req.body.contents) {
+        return res
+        .status(400)
+        .json ({ errorMessage: 'Please provide the title and contents for the post' })
+    }
+    db.update(req.params.id, req.body)
+    .then(updatedPost => {
+        if(updatedPost){
+            res
+            .status(200)
+            .json(updatedPost)
+        } else {
+            res
+            .status(404)
+            .json({ message: "The post with the specified ID does not exist" })
+        }
+    })
+    .catch(error => {
+        res
+        .status(500)
+        .json({ error: "The post information could not be modified" })
+    })
+
+})
+
+
+module.exports = router
