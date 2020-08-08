@@ -53,3 +53,22 @@ router.get('/api/posts/:id/comments', (res, res) => {
         .json({ error: 'The comments information not be retrieved.' })
     })
 })
+
+//POST creates a post using the information sent inside the request body
+router.post('/api/posts', (req, res) => {
+    if(!req.body.title && !req.body.contents){
+        return res
+        .status(400)
+        .json({ errorMessage: 'Please provide title and contents for the post' })
+    }
+    db.insert(req.body)
+    .then(id => {
+        res.status(201)
+        .json(id)
+    })
+    .catch(error => {
+        res
+        .status(500)
+        .json({ error: "there was an error while saving the post to the database" })
+    })
+})
