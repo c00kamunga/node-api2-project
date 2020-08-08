@@ -72,3 +72,30 @@ router.post('/api/posts', (req, res) => {
         .json({ error: "there was an error while saving the post to the database" })
     })
 })
+
+// creates a comment for the post with the specified ID using information inside of the request body
+router.post('/api/posts/:id/comments', (req, res) => {
+    if(!req.body.text){
+        res
+        .status(400)
+        .json({ errorMessage: "Please provide text for the comment." })
+    } else if (req.body.post_id !==Number (req.params.id)){
+        res
+        .status(400)
+        .json({ message: "The specified ID does not match the request ID" })
+    } else if(!db.findById(req.params.id)) {
+        res
+        .status(404)
+        .json({ message: "The post with the specified ID does not exist" })
+    } else {
+        db.insertComment(req.body)
+        .then(newComment => {
+            return res.status(201).json(newComment)
+        })
+        .catch(error => {
+            res
+            .status(500)
+            .json({ error: "There was an error while saving the post to the database" })
+        })
+    }
+})
