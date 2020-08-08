@@ -99,3 +99,24 @@ router.post('/api/posts/:id/comments', (req, res) => {
         })
     }
 })
+
+//Removed a post with the specified ID and returns the deleted post
+router.delete('/api/postst/:id', (req, res) => {
+    db.remove(req.params.id)
+    .then(removedPost => {
+        if(!removedPost) {
+            res
+            .status(404)
+            .json({ message: "The post with the specified ID does not exist" })
+        } else {
+            res
+            .status(200)
+            .json(removedPost)
+        }
+    })
+    .catch(error => {
+        res
+        .status(500)
+        .json({ error: "The post could not be removed" })
+    })
+})
